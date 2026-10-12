@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="680" viewBox="0 0 800 680">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#55404a"/>
+      <stop offset="1" stop-color="#2a232b"/>
+    </linearGradient>
+    <linearGradient id="vinyl" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#a37d91"/>
+      <stop offset="1" stop-color="#542f46"/>
+    </linearGradient>
+    <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-15)">
+      <path d="M1 0v6" stroke="#c2adaa" stroke-opacity=".18"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="680" fill="#d6cdc0"/>
+  <ellipse cx="402" cy="512" rx="202" ry="14" fill="#b5a89d" opacity=".5"/>
+  <path d="m211 238 365-21 20 255-374 25Z" fill="#352830" stroke="#29232a" stroke-width="3"/>
+  <path d="m199 248 365-21 20 253-374 25Z" fill="url(#body)" stroke="#29232a" stroke-width="3"/>
+  <path d="m199 248 365-21 20 253-374 25Z" fill="url(#grain)"/>
+  <path d="m207 357 166-12 12 145-170 10ZM384 344l183-13 11 144-180 14Z" fill="#3b2b34" stroke="#795c69" stroke-width="2"/>
+  <path d="m222 368 138-10 9 120-141 10M397 356l156-12 9 119-151 12" fill="none" stroke="#9a7c80" stroke-width="1"/>
+  <path d="m199 248 365-21-31 105-145 102-184-108Z" fill="#44313d" stroke="#29232a" stroke-width="2"/>
+  <path d="m199 248 365-21-31 105-145 102-184-108Z" fill="url(#grain)"/>
+  <path d="m435 234 129-7-31 105-110 77Z" fill="url(#vinyl)"/>
+  <path d="m450 246 96-6-20 69-77 54Z" fill="#cbaaB9" opacity=".19"/>
+  <path d="m213 260 337-20-28 83-136 96-168-98" fill="none" stroke="#c9a88b" stroke-width="1.5"/>
+  <path d="m378 403 23 12-2 20-23-14Z" fill="#bca086" stroke="#6a5047"/>
+  <path d="m223 493 347-23M575 240l17 224" fill="none" stroke="#b28c7f" stroke-width="1" stroke-dasharray="4 5"/>
+</svg>
