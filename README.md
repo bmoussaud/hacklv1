@@ -46,7 +46,7 @@ Lighthouse CI audits the production build and writes local HTML/JSON reports to 
 
 The final Act III production build passed local lint and all 32 desktop/mobile browser checks. Desktop/mobile screenshots were inspected for the integrated content and illustrations. A fresh Act III Lighthouse run scored 100 for performance, accessibility, best practices, and SEO; its HTML/JSON reports and latest manifest are in `.lighthouseci/reports`. These are current local results, not the carried-forward Act II scores or a claim that GitHub Actions has run. The remaining manual checks are listed below.
 
-Validated build identity: base commit `03ceedc` plus the Act III target-size correction. Documentation and regression checks accompany that correction. The frozen application assets are:
+Validated application commit: `a12c872`, including the Act III target-size correction, documentation, and regression checks. The frozen local application assets are:
 
 ```text
 index-Mpmd1Cfy.css
@@ -56,6 +56,14 @@ SHA256 3B67DDF7FA2792147D3AAAEDE88DF53E36BDDEFC87990EA94685CE4555EC8FB2
 ```
 
 Representative report: `localhost-index_html-2026_10_12_12_46_44.report.html` and its matching JSON report. A later code/build change invalidates this frozen-build identity until the affected checks and audit are repeated.
+
+## GitHub quality evidence
+
+The published application commit `a12c872` passed [Quality and Lighthouse run 38259592956](https://github.com/bmoussaud/hacklv1/actions/runs/38259592956). The actual remote job completed lint, production build, all 32 browser checks, and Lighthouse successfully.
+
+The downloaded remote Lighthouse report scored **100 for performance, accessibility, best practices, and SEO**. These are verified GitHub results, separate from the local scores above. The run retains `lighthouse-reports` and `browser-checks` artifacts; both were also downloaded into this session's artifact storage as a local backup. Report filename: `localhost-index_html-2026_10_12_14_00_46.report.html`, with its matching JSON report.
+
+This run proves the submitted application code; later documentation-only commits do not change the frozen application assets. Any application/configuration change requires fresh checks and current proof. Screen-reader, real-device, browser-zoom, and human rehearsal limitations remain documented below.
 
 ## Creative handoff
 
@@ -139,7 +147,7 @@ Draft for the brief's required 2-3 minute presentation, in English to match the 
 >
 > GitHub Copilot supported the narrative, original concept artwork, React integration, quality checks, final code review, and this presentation draft. The implementation stays small: reusable React components, structured content, plain CSS, and no unnecessary backend.
 >
-> We can show the current local browser-check results and Lighthouse report. GitHub Actions is configured, but remote proof remains pending publication authorization. An automated accessibility score is evidence, not a substitute for a real screen-reader review.
+> We can show the current local browser-check results and Lighthouse report, alongside a successful GitHub Actions run with retained reports. Its Lighthouse scores are one hundred in all four categories. An automated accessibility score is evidence, not a substitute for a real screen-reader review.
 >
 > Passage revives the collection's possibilities without pretending to complete its missing history.
 
@@ -198,4 +206,4 @@ Remaining manual checks for the team's QA/accessibility owner:
 
 The local reveal includes the focused target-size correction, current browser-based review, pitch script, and production-demo instructions. Final human creative approval and the manual checks above are still outstanding. Missing exhibits remain a source constraint, not a reason to invent evidence.
 
-Act II remains committed and tagged `act2` at `03ceedc`. The Act III reveal is maintained on the same feature branch. Remote publication has not been authorized; no branch/tag push or pull request was performed, and no remote CI success is claimed. The local demo can be ready, but the full hackathon hand-in is not complete until actual GitHub Actions proof exists. Preserve the Act II tag when publication is later authorized.
+Act II remains committed and tagged locally as `act2` at `03ceedc`. The Act III application branch has been published, and actual GitHub quality proof is verified and retained above. The `act2` tag was not pushed, and no pull request or merge was performed. Human creative approval, the remaining accessibility checks, and timed pitch rehearsal still belong to the team. Keep the Act II tag fixed during future changes.
