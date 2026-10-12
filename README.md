@@ -1,6 +1,6 @@
 # Operation Atelier 404
 
-Act II showcase for the Louis Vuitton hackathon: **ASYM-P / Passage**, a proposed capsule for design-conscious travellers. React + Vite, plain CSS, a single page, no backend or commercial transactions.
+Act III local reveal for the Louis Vuitton hackathon: **ASYM-P / Passage**, a proposed capsule for design-conscious travellers. React + Vite, plain CSS, a single page, no backend or commercial transactions.
 
 **This is a fictional reconstruction, not an official collection.** The title, product categories, names, and abstract studies are proposals. Only facts attributed to `operation_atelier_404_brief.pdf` are treated as source evidence.
 
@@ -17,8 +17,14 @@ Open the local URL printed by Vite. For the production demo:
 
 ```sh
 npm run build
-npm run preview -- --host 127.0.0.1
+npm run preview -- --host 127.0.0.1 --port 4275 --strictPort
 ```
+
+Open `http://127.0.0.1:4275/`. Keep the terminal running: this is a local preview, not public hosting. It must be restarted after a machine shutdown.
+
+If the port is occupied, do not terminate an unrelated process. Use an available alternative, for example `--port 4276 --strictPort`, and use the URL printed by Vite. If the page is blank, confirm the build succeeded, the preview command is still running, and the browser is using the correct port.
+
+The application uses local illustrations, bundled code, and system fonts. External network access is not required to browse it while the local server remains running. This is not a service-worker-backed offline application: localhost must stay reachable.
 
 ## Quality and proof
 
@@ -30,13 +36,26 @@ npm test
 npm run audit
 ```
 
-`npm run check` combines lint, production build, and desktop/mobile browser checks. The 22 checks cover the fiction disclosure, archival facts, source PDF, metadata, runtime/console/network errors, loaded illustrations and alt text, keyboard navigation and focus, native material disclosures, and the six source-labelled exhibit summaries. Reflow is checked at 320, 390, 768, and 1280 CSS pixels with product notes expanded.
+`npm run check` combines lint, production build, and desktop/mobile browser checks. The 32 checks cover the fiction disclosure, archival facts, source PDF, metadata, runtime/console/network errors, loaded illustrations and alt text, keyboard navigation and focus, native material disclosures, and the six source-labelled exhibit summaries. Reflow is checked at 320, 390, 768, and 1280 CSS pixels with product notes expanded.
+
+Act III adds full document tab-order coverage, 44 CSS-pixel control targets, landmark/heading and native expanded-state checks in Chromium's accessibility tree, computed text/focus contrast in expanded and hover states, and browsing with all external requests blocked.
 
 Lighthouse CI audits the production build and writes local HTML/JSON reports to `.lighthouseci/reports`. It needs Chrome/Chromium; if autodetection fails, set `CHROME_PATH` to the browser executable (the Chromium installed by Playwright also works). Reports are not uploaded to a public third-party service.
 
 `.github/workflows/quality.yml` runs the checks and Lighthouse on pushes and pull requests, retaining reports as GitHub Actions artifacts. The accessibility score gate of 100 and warning thresholds of 90 for the other categories are project choices, **not thresholds imposed by the brief**. Lighthouse does not replace manual accessibility review. A configured workflow is not evidence of a successful GitHub run; use the actual run and artifacts in the final presentation.
 
-The Act II production build passed local lint and all 22 desktop/mobile browser checks. Desktop/mobile screenshots were inspected for the integrated content and illustrations. The new Act II Lighthouse run scored 100 for performance, accessibility, best practices, and SEO; the HTML/JSON reports and latest manifest are in `.lighthouseci/reports`. These are current local results, not the carried-forward Act I scores or a claim that GitHub Actions has run. The final manual checklist remains open.
+The final Act III production build passed local lint and all 32 desktop/mobile browser checks. Desktop/mobile screenshots were inspected for the integrated content and illustrations. A fresh Act III Lighthouse run scored 100 for performance, accessibility, best practices, and SEO; its HTML/JSON reports and latest manifest are in `.lighthouseci/reports`. These are current local results, not the carried-forward Act II scores or a claim that GitHub Actions has run. The remaining manual checks are listed below.
+
+Validated build identity: base commit `03ceedc` plus the Act III target-size correction. Documentation and regression checks accompany that correction. The frozen application assets are:
+
+```text
+index-Mpmd1Cfy.css
+SHA256 B8566E44CC48A4B8055C6E02B390A9BCDD91299171B235A1BD804E7FB5365AA6
+index-sOWyAfP9.js
+SHA256 3B67DDF7FA2792147D3AAAEDE88DF53E36BDDEFC87990EA94685CE4555EC8FB2
+```
+
+Representative report: `localhost-index_html-2026_10_12_12_46_44.report.html` and its matching JSON report. A later code/build change invalidates this frozen-build identity until the affected checks and audit are repeated.
 
 ## Creative handoff
 
@@ -71,7 +90,7 @@ The assets contain no scripts, external resources, house logos, or archival phot
 
 ## Architecture review
 
-The AI-assisted Act II review preserves the small structure:
+The AI-assisted final review preserves the small structure:
 
 - `src/App.jsx`: semantic page shell and small `ConceptFigure`/`CollectionItem` components, with native `details`/`summary` interactions and the exhibit index.
 - `src/content.js`: product descriptions, image metadata, material notes, exhibit summaries, source facts, and unresolved questions, separate from rendering.
@@ -82,7 +101,9 @@ The AI-assisted Act II review preserves the small structure:
 
 There is no router, state layer, API, image service, or unused transactional control. Stable item IDs drive repeated markup. Navigation uses real anchors. The production build is what both browser checks and Lighthouse evaluate. The missing exhibits remain the main source-validation constraint; team approval of the concept artwork and manual accessibility review remain later-stage work.
 
-The integrated review checked content provenance, image semantics and loading, native disclosure behavior, visible focus, heading order, component reuse, and production asset availability. The exhibit index is inside the record section, not mixed into the proposed products. No authenticated product dimensions, capacities, prices, or original legal conditions are claimed. Browser checks verify closed and expanded notes and identify resource errors rather than substituting success-shaped image fallbacks.
+The final review checked content provenance, image semantics and loading, native disclosure behavior, visible focus, heading order, component reuse, and production asset availability. The exhibit index is inside the record section, not mixed into the proposed products. No authenticated product dimensions, capacities, prices, or original legal conditions are claimed. Browser checks verify closed and expanded notes and identify resource errors rather than substituting success-shaped image fallbacks.
+
+The focused Act III correction increases navigation, wordmark, primary-link, and footer-link targets to at least 44 CSS pixels without redesigning the page. Native disclosures already exceed that height. The review retains native `details`/`summary` semantics instead of introducing redundant ARIA state or JavaScript toggles. The existing type/palette and truthful copy remain intact.
 
 ## Team ownership and next work
 
@@ -98,24 +119,83 @@ Human assignments still need team confirmation; these are role-based handoffs, n
 | QA/accessibility | Triage CI failures; complete the manual checklist below |
 | Demo/pitch | Rehearse the local startup, story, evidence/fiction distinction, and actual audit proof |
 
-AI contributions: proposed narrative and product/material copy, original SVG concept illustrations, source-labelled exhibit summaries, React component integration, accessibility and browser checks, workflow configuration, and architecture/code review. These were assisted by GitHub Copilot; no use of MaIA or Claude Code is claimed.
+AI contributions: proposed narrative and product/material copy, original SVG concept illustrations, source-labelled exhibit summaries, React component integration, accessibility and browser checks, workflow configuration, final architecture/code review, and the pitch draft. These were assisted by GitHub Copilot; no use of MaIA or Claude Code is claimed.
 
 **Pitch premise:** "The crate gives us a material language, not a complete history. Passage proposes how that language could travel into a new collection. We distinguish every creative hypothesis from the brief's evidence, and make the revival accessible through a local React experience."
 
-## Act III handoff
+## Jury pitch
 
-The local Act II showcase is complete. The team still needs to approve the fictional concept and artwork, obtain the missing exhibits if available, and complete the manual accessibility checks. Recheck the production build and audit after any content or image change, then rehearse the local walkthrough and pitch with the actual quality evidence.
+Draft for the brief's required 2-3 minute presentation, in English to match the site. The presenter should rehearse aloud with the click path below; speech timing and human presenter/backup assignments have not been verified. Translate it if the jury presentation will be in French.
 
-The Act II application and workflow are maintained on this session's feature branch. Remote publication has not been authorized. Pushing the branch and obtaining an actual Actions run remain a separate handoff; no pull request was created and no remote CI success is claimed.
+> In 1987, sixty finished pieces were sealed away. Their release authorization had been withheld, and the reason was never entered. The archive counts sixty; the workshop record counts fifty-nine. Our starting point is not a solution to that mystery. It is a material language waiting for a new expression.
+>
+> This is ASYM-P / Passage: a fictional 2026 capsule revival inspired by the Louis Vuitton hackathon brief. Its name, product categories, and illustrations are our proposals, not recovered archive objects. We say that beside the hero, where visitors can actually read it.
+>
+> We imagine the audience as travellers who see an object as a piece of design. Three scales of movement shape the wider line: The Fold for the city, The Carry for departure, and The Fragment to keep close. Matte striated leather, thermoformed vinyl, geometric padding, and asymmetry connect the three. Our original illustrations make the shoulder, travel, and envelope silhouettes distinct without copying house logos or inventing archive photography.
+>
+> Opening a product's material notes explains the design decisions. The interaction uses native browser disclosures, not a custom widget. Keyboard navigation, visible focus, descriptive image text, responsive layouts, and larger touch targets are part of the experience, not a layer added at the end.
+>
+> The record separates known facts from open questions. Its six exhibit summaries are explicitly labelled as summaries from the brief: the actual documents were not supplied. We have not invented the legal memo's conditions or explained what happened to Janus.
+>
+> GitHub Copilot supported the narrative, original concept artwork, React integration, quality checks, final code review, and this presentation draft. The implementation stays small: reusable React components, structured content, plain CSS, and no unnecessary backend.
+>
+> We can show the current local browser-check results and Lighthouse report. GitHub Actions is configured, but remote proof remains pending publication authorization. An automated accessibility score is evidence, not a substitute for a real screen-reader review.
+>
+> Passage revives the collection's possibilities without pretending to complete its missing history.
 
-## Manual accessibility checklist
+## Walkthrough and rehearsal
 
-Owner: the team's QA/accessibility role. Record actual results before the final demo; unchecked items are not passed.
+| Stop | Show | Point to make |
+|---|---|---|
+| Beginning of page | Hero, illustration, visible fiction notice | The revival is a proposed interpretation, not an authenticated collection |
+| The capsule | Three distinct concepts | Audience, wider line, material vocabulary, and original artwork |
+| The Fold's material disclosure | Expand with keyboard or pointer | Explain the proposal and demonstrate native accessible interaction |
+| The record | Facts, open questions, six exhibit summaries | Evidence and invention remain separate; missing sources are disclosed |
+| Local Lighthouse report | Current report, not an old screenshot | Actual local proof, with remote and manual-review limitations stated |
+| Finish | One sentence from the pitch | Revive possibilities without inventing history |
 
-- [ ] Read the page with a screen reader: landmarks, headings, order, links, and fiction disclosure make sense.
-- [ ] Navigate every link with keyboard only; focus remains visible and the skip link moves to main content.
-- [ ] Check contrast for text, link states, and focus indicators, including after imagery changes.
-- [ ] Check reflow at 320 CSS pixels and at browser zoom; no clipped text or horizontal scrolling.
-- [ ] Review alt text for any new meaningful images; decorative images are ignored correctly.
-- [ ] Verify reduced-motion behavior and touch navigation on a real mobile device.
-- [ ] Attach final Lighthouse reports and identify limitations of the automated audit honestly.
+The five jury criteria map to clear evidence: small React architecture for code quality; coherent artwork/materials for visual result; native interaction and reviewed accessibility for inclusion; documented actual AI contributions across roles; and the short, rehearsed story for presentation.
+
+Before the jury arrives, the team should assign a presenter and backup, rehearse aloud, reset the page to the beginning, close expanded disclosures, and open the current local report in a second tab. Keep the source PDF as optional evidence; do not spend the pitch searching for absent exhibits.
+
+## Local audit report for the demo
+
+After a successful audit, copy only its representative report into the generated build:
+
+```powershell
+$manifest = Get-Content .\.lighthouseci\reports\manifest.json -Raw | ConvertFrom-Json
+$report = $manifest | Where-Object isRepresentativeRun | Select-Object -First 1
+if (-not $report) { throw 'No representative Lighthouse report found' }
+New-Item -ItemType Directory -Path .\dist\quality -Force | Out-Null
+Copy-Item -LiteralPath $report.htmlPath -Destination .\dist\quality\lighthouse.html
+Copy-Item -LiteralPath $report.jsonPath -Destination .\dist\quality\lighthouse.json
+```
+
+The production preview then serves `http://127.0.0.1:4275/quality/lighthouse.html`. This is a generated proof artifact, not another application route. Build output and reports are ignored by Git. A new build removes the copied report: rerun the audit and copy the new representative report rather than presenting stale evidence. To open the original HTML report without the server, use `Invoke-Item -LiteralPath $report.htmlPath`.
+
+## Accessibility review status
+
+| Review | Method and status |
+|---|---|
+| Keyboard order, skip link, return-to-top, disclosure toggles, focus | Passed automated browser checks across desktop/mobile emulation; all 11 controls traversed in DOM order |
+| Landmarks, heading levels, image names, native expanded states | Chromium accessibility tree inspected and regression-checked; not a screen-reader session |
+| Text, hover/expanded, and focus contrast | Passed computed contrast checks: normal text at least 4.5:1, large text and focus at least 3:1 |
+| Reflow with expanded notes | Passed at 320, 390, 768, and 1280 CSS pixels |
+| Touch targets and reduced motion | Passed browser checks; visible controls are at least 44 by 44 CSS pixels and navigation is motion-free |
+| Desktop/mobile composition | Screenshots inspected; original concepts, captions, and disclosure remain readable |
+| Screen-reader and physical-device behavior | Not performed; require actual assistive technology and a real device |
+| Actual browser zoom at 200% and 400% | Native Chrome UI verification was attempted but the UI bridge could not reliably dispatch/verify zoom; remains pending. Narrow-viewport tests are not claimed as browser-zoom checks |
+
+Remaining manual checks for the team's QA/accessibility owner:
+
+- The temporary native Chrome review window may remain minimized: the UI bridge could not reliably complete zoom or close-window actions. Close that review window manually if it is still present.
+- [ ] With a real screen reader, read from the page title through landmarks and headings; confirm meaningful image names, fiction disclosure, and each disclosure's announced state.
+- [ ] In the actual presentation browser, use browser zoom at 200% and 400%; traverse expanded notes and the record without clipping or horizontal scrolling.
+- [ ] On a real mobile device with access to a locally available preview, tap navigation/disclosures, read captions, and confirm focus/zoom behavior.
+- [ ] Rehearse the pitch aloud and confirm the brief-required duration, presenter, and backup.
+
+## Reveal handoff and publication status
+
+The local reveal includes the focused target-size correction, current browser-based review, pitch script, and production-demo instructions. Final human creative approval and the manual checks above are still outstanding. Missing exhibits remain a source constraint, not a reason to invent evidence.
+
+Act II remains committed and tagged `act2` at `03ceedc`. The Act III reveal is maintained on the same feature branch. Remote publication has not been authorized; no branch/tag push or pull request was performed, and no remote CI success is claimed. The local demo can be ready, but the full hackathon hand-in is not complete until actual GitHub Actions proof exists. Preserve the Act II tag when publication is later authorized.

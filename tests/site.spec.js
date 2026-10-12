@@ -147,3 +147,126 @@ for (const width of [320, 390, 768, 1280]) {
     }
   })
 }
+
+test('every control follows the document keyboard order without trapping focus', async ({ page }) => {
+  await page.goto('/')
+  const controls = page.locator('a, summary')
+  await expect(controls).toHaveCount(11)
+  for (const control of await controls.all()) {
+    await page.keyboard.press('Tab')
+    await expect(control).toBeFocused()
+    expect(await control.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe('solid')
+    expect(await control.evaluate((node) => getComputedStyle(node).outlineWidth)).toBe('3px')
+  }
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/#main$/)
+  await expect(page.locator('main')).toBeFocused()
+})
+
+test('navigation and disclosure targets are at least 44 CSS pixels', async ({ page }) => {
+  await page.goto('/')
+  for (const control of await page.locator('a:not(.skip-link), summary').all()) {
+    const box = await control.boundingBox()
+    expect(box).not.toBeNull()
+    expect(box.width).toBeGreaterThanOrEqual(44)
+    expect(box.height).toBeGreaterThanOrEqual(44)
+  }
+})
+
+test('landmarks, heading order, and native disclosure states are accessible', async ({ page }) => {
+  await page.goto('/')
+  for (const role of ['banner', 'main', 'contentinfo']) {
+    await expect(page.getByRole(role)).toHaveCount(1)
+  }
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1)
+  const levels = await page.getByRole('heading').evaluateAll((headings) => headings.map((heading) => Number(heading.tagName.substring(1))))
+  let previousLevel = 0
+  for (const level of levels) {
+    expect(level).toBeLessThanOrEqual(previousLevel + 1)
+    previousLevel = level
+  }
+  const session = await page.context().newCDPSession(page)
+  for (const summary of await page.locator('summary').all()) {
+    const name = await summary.innerText()
+    for (const expanded of [false, true]) {
+      if (expanded) await summary.click()
+      const { nodes } = await session.send('Accessibility.getFullAXTree')
+      const node = nodes.find((item) => !item.ignored && item.name?.value === name)
+      expect(node?.role.value).toBe('DisclosureTriangle')
+      expect(node.properties.find((property) => property.name === 'expanded')?.value.value).toBe(expanded)
+    }
+  }
+  await session.detach()
+})
+
+test('text and focus contrast remain sufficient in expanded and hover states', async ({ page }) => {
+  await page.goto('/')
+  for (const summary of await page.locator('summary').all()) await summary.click()
+  const targets = ['.site-header nav a', '.text-link', 'summary', '.site-footer a']
+  for (const selector of targets) {
+    const target = page.locator(selector).first()
+    await target.hover()
+    await target.focus()
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Shift+Tab')
+    await expect(target).toBeFocused()
+    expect(await target.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe('solid')
+    const failures = await page.evaluate(() => {
+      const channels = (color) => color.match(/[\d.]+/g).map(Number)
+      const luminance = (color) => channels(color).slice(0, 3).reduce((sum, value, index) => {
+        const channel = value / 255
+        const linear = channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+        return sum + linear * [0.2126, 0.7152, 0.0722][index]
+      }, 0)
+      const contrast = (first, second) => {
+        const values = [luminance(first), luminance(second)].sort((a, b) => b - a)
+        return (values[0] + 0.05) / (values[1] + 0.05)
+      }
+      const background = (element) => {
+        let current = element
+        while (current) {
+          const color = getComputedStyle(current).backgroundColor
+          const values = channels(color)
+          if (values.length === 3 || values[3] === 1) return color
+          current = current.parentElement
+        }
+        throw new Error('No opaque background found for contrast review')
+      }
+      const failures = []
+      for (const element of document.querySelectorAll('h1, h2, h3, h4, p, dt, dd, summary, figcaption, a')) {
+        if (!element.checkVisibility()) continue
+        const style = getComputedStyle(element)
+        const size = parseFloat(style.fontSize)
+        const large = size >= 24 || (size >= 18.66 && Number(style.fontWeight) >= 700)
+        const ratio = contrast(style.color, background(element))
+        if (ratio < (large ? 3 : 4.5)) failures.push({ text: element.textContent.trim(), ratio })
+      }
+      const focused = document.activeElement
+      const focusStyle = getComputedStyle(focused)
+      if (contrast(focusStyle.outlineColor, background(focused)) < 3) failures.push({ text: 'Focus outline', ratio: contrast(focusStyle.outlineColor, background(focused)) })
+      return failures
+    })
+    expect(failures).toEqual([])
+  }
+})
+
+test('the production showcase works with all external requests blocked', async ({ page, baseURL }) => {
+  const externalRequests = []
+  await page.route('**/*', (route) => {
+    if (new URL(route.request().url()).origin !== new URL(baseURL).origin) {
+      externalRequests.push(route.request().url())
+      return route.abort()
+    }
+    return route.continue()
+  })
+  await page.goto('/')
+  for (const image of await page.getByRole('img').all()) {
+    await image.scrollIntoViewIfNeeded()
+    await expect.poll(() => image.evaluate((element) => element.complete && element.naturalWidth > 0)).toBe(true)
+  }
+  await page.getByText('Explore The Fold: materials and construction', { exact: true }).click()
+  await expect(page.getByRole('article').first().locator('.material-content')).toBeVisible()
+  const pdf = await page.request.get('/operation_atelier_404_brief.pdf')
+  expect(pdf.ok()).toBe(true)
+  expect(externalRequests).toEqual([])
+})

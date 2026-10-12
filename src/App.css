@@ -16,7 +16,7 @@
   padding: 1.75rem clamp(1.25rem, 5vw, 5rem);
 }
 .site-header { border-bottom: 1px solid var(--rule); }
-.wordmark { font-size: 1.25rem; font-weight: 700; text-decoration: none; letter-spacing: 0.04em; }
+.wordmark { font-size: 1.25rem; font-weight: 700; text-decoration: none; letter-spacing: 0.04em; gap: 0.3em; }
 .wordmark span { font-weight: 400; }
 .site-header nav { display: flex; flex-wrap: wrap; gap: 1.5rem; }
 .site-header nav a { font-size: 0.9rem; padding-block: 0.6rem; }
@@ -97,6 +97,11 @@ h3 { font-size: 1.6rem; font-weight: 500; line-height: 1.25; }
 .site-footer { align-items: flex-start; border-top: 1px solid var(--rule); font-size: 0.8rem; }
 .site-footer p + p { margin: 0; color: var(--muted); }
 .site-footer a { padding-block: 0.5rem; }
+.wordmark, .site-header nav a, .text-link, .site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 
 @media (max-width: 60rem) {
   .site-header { flex-wrap: wrap; gap: 1rem; }
